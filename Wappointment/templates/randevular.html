@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="/static/manifest.json">
+    <link rel="icon" type="image/png" href="https://cdn.icon-icons.com/icons2/2560/PNG/512/calendar_alert_notification_date_appointment_icon_153130.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Randevu Takip</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 80%;
+            overflow-x: auto;
+        }
+        h2 {
+            color: #4a90e2;
+            margin-bottom: 20px;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .table th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+        .button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #6a82fb;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.3s;
+            display: inline-block;
+        }
+        .button:hover {
+            background: #fc5c7d;
+        }
+        .button-container {
+            text-align: center;
+        }
+        .checkbox-container {
+            display: inline-block;
+            margin-right: 10px;
+        }
+        .confirm-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+            display: none;
+        }
+        .info {
+            margin-top: 20px;
+            text-align: left;
+        }
+        .info p {
+            margin: 5px 0;
+        }
+        .past {
+            border-left: 8px solid red;
+        }
+        .future {
+            border-left: 8px solid green;
+        }
+        .today {
+            border-left: 8px solid blue;
+        }
+        .expired {
+            border-left: 8px solid orange;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Randevular</h2>
+        <form method="post" action="/randevular" id="randevuForm">
+            <table class="table" id="randevuTable">
+                <thead>
+                    <tr>
+                        <th style="text-align: center;">İsim</th>
+                        <th style="text-align: center;">Tarih</th>
+                        <th style="text-align: center;">
+                            <div style="display: flex; justify-content: center; align-items: center;">
+                                Seç&nbsp; <input type="checkbox" id="selectAll" onchange="toggleAllSelection(this)">
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in range(data.values()|first|length) %}
+                    <tr class="randevu-row">
+                        <td><input type="text" name="İsim" value="{{ data['İsim'][i] }}"></td>
+                        <td><input type="datetime-local" name="Tarih" value="{{ data['Tarih'][i] }}"></td>
+                        <td class="checkbox-container"><input type="checkbox" name="select" value="{{ i }}"></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="button-container">
+                <button type="button" class="button" onclick="addRow()">Yeni Randevu Ekle</button>
+                <button type="button" class="button" onclick="confirmDelete()">Seçimi Sil</button>
+                <button type="submit" class="button">Kaydet</button>
+                <a href="/welcome" class="button">Geri Dön</a>
+            </div>
+        </form>
+        <div class="info">
+            <p><span style="border-left: 5px solid red; padding-left: 5px;">Kırmızı:</span> Tarihi geçmiş randevu</p>
+            <p><span style="border-left: 5px solid orange; padding-left: 5px;">Turuncu:</span> Bugüne ait saati geçen randevu</p>
+            <p><span style="border-left: 5px solid blue; padding-left: 5px;">Mavi:</span> Bugüne ait aktif randevu</p>
+            <p><span style="border-left: 5px solid green; padding-left: 5px;">Yeşil:</span> Gelecek tarihli randevu</p>
+        </div>
+    </div>
+    <div class="confirm-container" id="confirmContainer">
+        <p>Seçilen satırları silmek istediğinize emin misiniz? (Bu işlem geri alınamaz!)</p>
+        <button class="button" onclick="confirmDeleteAction()">Evet</button>
+        <button class="button" onclick="cancelDelete()">Hayır</button>
+    </div>
+    <script>
+        let changesMade = false;
+
+        function addRow() {
+            alert("Lütfen yeni randevu oluşturduktan sonra kaydet tuşuna basmayı unutmayın");
+            const table = document.getElementById('randevuTable').getElementsByTagName('tbody')[0];
+            const newRow = table.insertRow();
+            let newCell = newRow.insertCell(0);
+            newCell.innerHTML = '<input type="text" name="İsim">';
+            newCell = newRow.insertCell(1);
+            newCell.innerHTML = '<input type="datetime-local" name="Tarih">';
+            newCell = newRow.insertCell(2);
+            newCell.innerHTML = '<input type="checkbox" name="select">';
+            changesMade = true;
+        }
+
+        function confirmDelete() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+
+            if (checkboxes.length === 0) {
+                alert('Lütfen bir seçim yapınız.');
+                return;
+            }
+
+            const confirmContainer = document.getElementById('confirmContainer');
+            confirmContainer.style.display = 'block';
+        }
+
+        function confirmDeleteAction() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+
+            checkboxes.forEach(checkbox => {
+                const row = checkbox.closest('tr');
+                row.remove();
+            });
+
+            const confirmContainer = document.getElementById('confirmContainer');
+            confirmContainer.style.display = 'none';
+
+            changesMade = true;
+
+            document.getElementById('randevuForm').submit();
+        }
+
+        function cancelDelete() {
+            const checkboxes = document.querySelectorAll('.randevu-row input[type="checkbox"]:checked');
+
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+
+            const confirmContainer = document.getElementById('confirmContainer');
+            confirmContainer.style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const rows = document.querySelectorAll('.randevu-row');
+            const now = new Date();
+            const pastAppointments = [];
+            const expiredTodayAppointments = [];
+            const todayAppointments = [];
+            const futureAppointments = [];
+
+            rows.forEach(row => {
+                const dateInput = row.querySelector('input[name="Tarih"]');
+                const dateValue = new Date(dateInput.value);
+
+                if (dateValue < now && dateValue.toDateString() === now.toDateString()) {
+                    row.classList.add('expired');
+                    expiredTodayAppointments.push(row);
+                } else if (dateValue < now) {
+                    row.classList.add('past');
+                    pastAppointments.push(row);
+                } else if (dateValue.toDateString() === now.toDateString()) {
+                    row.classList.add('today');
+                    todayAppointments.push(row);
+                } else {
+                    row.classList.add('future');
+                    futureAppointments.push(row);
+                }
+            });
+
+            pastAppointments.sort((a, b) => new Date(a.querySelector('input[name="Tarih"]').value) - new Date(b.querySelector('input[name="Tarih"]').value));
+            expiredTodayAppointments.sort((a, b) => new Date(a.querySelector('input[name="Tarih"]').value) - new Date(b.querySelector('input[name="Tarih"]').value));
+            todayAppointments.sort((a, b) => new Date(a.querySelector('input[name="Tarih"]').value) - new Date(b.querySelector('input[name="Tarih"]').value));
+            futureAppointments.sort((a, b) => new Date(a.querySelector('input[name="Tarih"]').value) - new Date(b.querySelector('input[name="Tarih"]').value));
+
+            const sortedRows = [...todayAppointments, ...futureAppointments, ...expiredTodayAppointments, ...pastAppointments];
+            const tbody = document.querySelector('#randevuTable tbody');
+            sortedRows.forEach(row => tbody.appendChild(row));
+        });
+
+        function toggleAllSelection(masterCheckbox) {
+            const checkboxes = document.querySelectorAll('.randevu-row input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = masterCheckbox.checked;
+            });
+        }
+    </script>
+</body>
+</html>

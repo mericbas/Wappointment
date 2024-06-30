@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="manifest" href="/static/manifest.json">
+
+    <link rel="icon" type="image/png" href="https://cdn.icon-icons.com/icons2/2560/PNG/512/calendar_alert_notification_date_appointment_icon_153130.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Randevu Takip</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            background: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: #ff6b6b;
+        }
+        p {
+            color: #555;
+        }
+        .button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #6a82fb;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.3s;
+            display: inline-block; /* Butonları satır içi öğeler olarak ayarla */
+        }
+        .button:hover {
+            background: #fc5c7d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Hoşgeldiniz!</h1>
+        <p>Yapmak istediğiniz işlemi seçiniz.</p>
+        <a href="/randevular" class="button">Randevuları Görüntüle</a>
+        <a href="/logout" class="button">Çıkış Yap</a>
+    </div>
+</body>
+</html>

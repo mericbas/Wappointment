@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="/static/manifest.json">
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/static/service-worker.js');
+      }
+    </script>
+    <link rel="icon" type="image/png" href="https://cdn.icon-icons.com/icons2/2560/PNG/512/calendar_alert_notification_date_appointment_icon_153130.png">
+    <meta charset="UTF-8">
+    <title>Randevu Takip - Kayıt Ol</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            background-size: 400% 400%;
+            animation: gradientBackground 15s ease infinite;
+        }
+
+        @keyframes gradientBackground {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .container {
+            background: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #e53935;
+            animation: slideInFromLeft 1s ease-out;
+        }
+
+        @keyframes slideInFromLeft {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        label {
+            display: block;
+            margin-top: 20px;
+            color: #555;
+            font-size: 0.9em;
+            font-weight: bold;
+            text-transform: uppercase;
+            animation: slideInFromRight 1s ease-out;
+        }
+
+        @keyframes slideInFromRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            border-color: #e53935;
+        }
+
+        input[type="submit"] {
+            margin-top: 30px;
+            padding: 12px 0;
+            width: 100%;
+            background: #e53935;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: block;
+            text-transform: uppercase;
+            animation: slideInFromBottom 1s ease-out;
+        }
+
+        @keyframes slideInFromBottom {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        input[type="submit"]:hover {
+            background: #c62828;
+        }
+
+        .flash-message {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .flash-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .flash-error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+    <script>
+        function validateUsername() {
+            const usernameInput = document.getElementById('username');
+            usernameInput.value = usernameInput.value.replace(/\s+/g, '');
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>Randevu Takip Kayıt Paneli</h2>
+        
+        <form method="post" action="/register">
+            <label for="username">Kullanıcı Adı:</label>
+            <input type="text" id="username" name="username" required oninput="validateUsername()">
+            <label for="email">E-posta:</label>
+            <input type="email" id="email" name="email" required>
+            <label for="password">Şifre:</label>
+            <input type="password" id="password" name="password" required>
+            <label for="confirm_password">Şifre (Tekrar):</label>
+            <input type="password" id="confirm_password" name="confirm_password" required>
+            <input type="submit" value="Kayıt Ol">
+        </form>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>

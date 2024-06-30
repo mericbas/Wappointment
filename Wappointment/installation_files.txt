@@ -1,0 +1,57 @@
+Bu Flask uygulamasını çalıştırabilmek için aşağıdaki adımları takip ederek gerekli paketleri kurmanız gerekiyor:
+
+1. **Python Kurulumu**: Python'un yüklü olduğundan emin olun. Eğer yoksa [Python'un resmi sitesinden](https://www.python.org/downloads/) indirip kurabilirsiniz. Python 3.6 veya daha yeni bir sürüm gereklidir.
+
+2. **Flask Kurulumu**: Flask framework'ü için pip (Python paket yöneticisi) kullanarak kurulum yapmanız gerekiyor. Komut satırında aşağıdaki komutu çalıştırarak Flask'ı kurabilirsiniz:
+
+   ```
+   pip install Flask
+   ```
+
+3. **pandas Kurulumu**: Bu uygulama pandas kütüphanesini kullanıyor. pandas, Excel dosyalarıyla çalışmak için gerekli bir kütüphanedir. Flask kurulumundan sonra aşağıdaki komutla pandas'ı yükleyin:
+
+   ```
+   pip install pandas
+   ```
+
+4. **Diğer Gerekli Paketler**: Koddaki `os` ve `openpyxl` gibi standart Python kütüphaneleri genellikle Python ile birlikte gelir, ek kurulum yapmanıza gerek yoktur.
+
+Bu adımları tamamladıktan sonra Flask uygulamanızı çalıştırmak için komut satırında uygulamanın bulunduğu dizine gidin ve aşağıdaki komutu çalıştırın:
+
+```
+python app.py
+```
+
+Burada `app.py` dosyasının adı ve yolunu kendi projenizdeki dosya adı ve yoluna göre değiştirmelisiniz. Bu komut, Flask uygulamanızı başlatacak ve varsayılan olarak `http://localhost:5000` adresinde çalışacaktır. Eğer `80` numaralı portu kullanmak istiyorsanız, kullanmak istediğiniz portu belirtmek için `app.run(host='0.0.0.0', port=80, debug=True)` satırını değiştirebilirsiniz.
+
+Bu adımları takip ederek, Flask uygulamanızı başarıyla çalıştırabilirsiniz.
+
+----------------------------------------------------------------------------------------------------------------------
+
+To run this Flask application, you need to ensure the following dependencies are installed via command line:
+
+1. **Python Installation**: Make sure Python is installed. If not, download and install it from the [official Python website](https://www.python.org/downloads/). Python 3.6 or newer is required.
+
+2. **Flask Installation**: Install Flask framework using pip (Python package manager) by running the following command:
+
+   ```
+   pip install Flask
+   ```
+
+3. **pandas Installation**: This application uses the pandas library, which is essential for working with Excel files. After installing Flask, install pandas with the following command:
+
+   ```
+   pip install pandas
+   ```
+
+4. **Other Required Packages**: The code uses standard Python libraries like `os` and `openpyxl`, which typically come bundled with Python and do not require additional installation.
+
+Once these steps are completed, navigate to the directory where your Flask application (`app.py` or your chosen filename) is located using the command line. Run the application with:
+
+```
+python app.py
+```
+
+Replace `app.py` with the actual filename of your Flask application. This command will start your Flask application, which by default will run at `http://localhost:5000`. If you want to use port `80`, modify the `app.run(host='0.0.0.0', port=80, debug=True)` line accordingly in your code.
+
+Following these steps will allow you to successfully run your Flask application.

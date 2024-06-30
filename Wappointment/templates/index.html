@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Randevu Takip</title>
+    <link rel="icon" type="image/png" href="https://cdn.icon-icons.com/icons2/2560/PNG/512/calendar_alert_notification_date_appointment_icon_153130.png">
+    <link rel="manifest" href="/static/manifest.json">
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/static/service-worker.js');
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+            background-size: 400% 400%;
+            animation: gradientBackground 15s ease infinite;
+        }
+
+        @keyframes gradientBackground {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .container {
+            background: #fff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #4a90e2;
+            font-weight: 700;
+        }
+
+        label {
+            display: block;
+            margin-top: 20px;
+            color: #555;
+            font-size: 0.9em;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            outline: none;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: #4a90e2;
+            box-shadow: 0 0 8px rgba(74, 144, 226, 0.5);
+        }
+
+        input[type="submit"] {
+            margin-top: 30px;
+            padding: 12px 0;
+            width: 100%;
+            background: #28a745;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+            text-transform: uppercase;
+        }
+
+        input[type="submit"]:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .register-link {
+            display: block;
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #007bff;
+            text-decoration: none;
+            transition: color 0.3s, transform 0.3s;
+        }
+
+        .register-link:hover {
+            color: #ff6666;
+            transform: translateY(-2px);
+        }
+
+        .flash-message {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .flash-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .flash-error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Randevu Takip Giriş Paneli</h2>
+        <form method="post" action="/login">
+            <label for="username">Kullanıcı Adı:</label>
+            <input type="text" id="username" name="username" required>
+            <label for="password">Şifre:</label>
+            <input type="password" id="password" name="password" required>
+            <input type="submit" value="Giriş Yap">
+        </form>
+        <a href="/register" class="register-link">Hesabın yok mu? Kayıt olmak için tıkla!</a>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>
